@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step3 - Locking down the SSL/TLS Environment" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Elliptical Curves, RSA, Encryption, TLSv1, TLSv1.1, TLSv1.2, SSLv2, SSLv3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 3 - locking Down SSL/TLS Environment (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 3 - Locking down the SSL/TLS environment</h3>
+          <p> Another option is to remove or add SSL/TLS Protocols - I highly recommend at a minimum to remove -SSLv2 and -SSLv3!!! To remove TLSv1 and TLSv1.1 support just add the lines -TLSv1 -TLSv1.1 +TLSv1.2. You can also use -all and +TLSv1.2.  TLSv1.1 is rarely used and is not really that different from TLSv1. It is recommended, if you can at any chance, to use only TLSv1.2, but this change should be evaluated on its overall effect prior to making such a change. All of this will be discussed in the following sections.</p>
+          <p><strong>Protocol Support</strong><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;TLSv1.0 <strong> - </strong><span class="red">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Do not use!!!</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;TLSv1.1 <strong> - </strong><span class="red">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Do not use!!!</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;TLSv1.2 <strong> - </strong><span class="green">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- We will score 100% on all areas but Cipher Strength will be 90% To acheive 100 % on all tests, remove 128 bit cipher support. </span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;TLSv1.3  <a href="https://tools.ietf.org/html/rfc8446" title="TLSv1.3" target="_blank"><strong> -</strong> &nbsp;&nbsp;&nbsp;&nbsp;Standard coming soon</a> </p>
+        </div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step2c-Prep.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step3a-Lock.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>

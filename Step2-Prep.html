@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step2 - Preparing the SSL/TLS environment" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Encryption, Diffie-Helman, DH, Logjam, Keys" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 2 - Prepare the SSL/TLS Environment (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 2 - Preparing the SSL/TLS environment</h3>
+          <p>Now we need to create and secure the directory where our Certificates and Keys will be stored to be used by Apache. We will also need to create some random DH Parameters for offsetting the <a href="https://weakdh.org/" class="link" title="Weak Diffie-Helmen" target="_blank">Logjam vulnerability</a> and making a better overall security stance.</p>
+        </div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step1-Cert.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step2a-Prep.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>

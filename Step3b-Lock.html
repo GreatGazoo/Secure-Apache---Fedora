@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step 3b - Online Certificate Status Protocol (OCSP) Stapling" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Elliptical Curves, RSA, Encryption, Online Certificate Status Protocol, OCSP, Certificate Stapling, CRIME Attack, Diffie-Helman, DH" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 3b - OCSP Stapling (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 3b - Online Certificate Status Protocol (OCSP) Stapling - <span class="red"> Mandatory Step!!!</span></h3>
+          <p class="card-text">While it may appear that allowing the site operator to control verification responses would allow a fraudulent site to issue false verification for a revoked certificate, the stapled responses can't be forged as they need to be directly signed by the certificate authority, not the server. If the client does not receive a stapled response, it will just contact the OCSP server by itself. However, if the client receives an invalid stapled response, it will abort the connection. The only increased risk of OCSP stapling is that the notification of revocation for a certificate may be delayed until the last-signed OCSP response expires.</p>
+          <p class="card-text">As a result, clients continue to have verifiable assurance from the certificate authority that the certificate is presently valid (or was quite recently), but no longer need to individually contact the OCSP server. This means that the brunt of the resource burden is now placed back on the certificate holder. It also means that the client software no longer needs to disclose users' browsing habits to any third party.</p>
+          <p class="card-text">Overall performance is also improved: When the client fetches the OCSP response directly from the CA, it usually involves the lookup of the domain name of the CA's OCSP server in the DNS as well as establishing a connection to the OCSP server. When OCSP stapling is used, the certificate status information is delivered to the client through an already established channel, reducing overhead and improving performance - <a href="https://en.wikipedia.org/wiki/OCSP_stapling" title="OCSP Stapling" target="_blank">Wikipedia</a></p>
+          <h4>Global use of the OCSP for all sites using Apache <span class="green">(Preferred Method)</span></h4>
+          <pre>nano /etc/httpd/conf.modules.d/ssl.conf</pre>
+          <h5>Add  the following <span class="blue">blue lines</span> below into the ssl.conf under the Pseudo Random Number Generator (PRNG) section.</h5>
+	<p class="card-text"> This will allow for the global use of the DHParam and allow us to determine what Ellipitical Curves we use to use in order.</p>
+	  <p class="card-text"> 
+        SSLRandomSeed startup builtin <br>
+        SSLRandomSeed startup file:/dev/urandom 512 <br>
+        SSLRandomSeed connect builtin <br>
+        SSLRandomSeed connect file:/dev/urandom 512<br>
+        SSLCompression off <span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Do not allow compression to prevent <a href="https://en.wikipedia.org/wiki/CRIME" title="CRIME attack" target="_blank"> CRIME</a> attack </span><br>
+<pre>SSLCompression off</pre>
+          <h5>Change or uncomment the following <span class="blue">blue lines</span> under the Inter-Process Session Cache section in the ssl.conf</h5>
+          <pre>SSLSessionCache               shmcb:/run/httpd/sslcache(512000)
+SSLSessionCacheTimeout        60
+SSLStaplingCache              &quot;shmcb:logs/stapling-cache(150000)&quot;</pre>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+          <h4 class="mt-3">Add/Change the following <span class="blue">blues lines</span> in the Website config file</h4>
+          <pre>nano /etc/httpd/conf.d/EXAMPLE_com_ssl.conf</pre>
+          <p class="card-text">&lt;IfModule mod_ssl.c&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAdmin host@EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerName EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAlias www.EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DocumentRoot /var/www/html/EXAMPLE<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectoryIndex index.html<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogLevel info ssl:warn<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ErrorLog /var/log/httpd/error.log<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CustomLog /var/log/httpd/access.log combined<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLEngine on<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateFile &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/etc/httpd/ssl/www_EXAMPLE_com.crt<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateKeyFile   /etc/httpd/ssl/rsa_EXAMPLE.key &nbsp;&nbsp;&nbsp;&nbsp;<b> or </b> &nbsp;&nbsp;&nbsp;&nbsp;ec_EXAMPLE.key<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateChainFile /etc/httpd/ssl/EXAMPLE_CA.crt<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLUseStapling on</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLStaplingResponderTimeout 5</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLStaplingReturnResponderErrors off</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+            &lt;/IfModule&gt;</p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+          <h4 class="mt-3">Restart Apache</h4>
+          <pre>systemctl restart httpd</pre>
+          <h4>Local use in the Apache Website config file <span class="orange">(Alternative Method)</span></h4>
+          <p class="card-text">&lt;IfModule mod_ssl.c&gt;<br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLSessionCache &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shmcb:${APACHE_RUN_DIR}/ssl_scache(512000)</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLSessionCacheTimeout &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;60</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLStaplingCache &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;shmcb:logs/stapling-cache(512000)&quot;</span><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAdmin host@EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerName EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAlias www.EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DocumentRoot /var/www/html/EXAMPLE<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectoryIndex index.html<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogLevel info ssl:warn<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ErrorLog /var/log/httpd/error.log<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CustomLog /var/log/httpd/access.log combined<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLEngine on<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateFile &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/etc/httpd/ssl/www_EXAMPLE_com.crt<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateKeyFile   /etc/httpd/ssl/rsa_EXAMPLE.key &nbsp;&nbsp;&nbsp;&nbsp;<b> or </b> &nbsp;&nbsp;&nbsp;&nbsp;ec_EXAMPLE.key<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateChainFile /etc/httpd/ssl/EXAMPLE_CA.crt<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLUseStapling on</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLStaplingResponderTimeout 5</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLStaplingReturnResponderErrors off</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SSLCompression off </span><br>
+            ...............<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+            &lt;/IfModule&gt;</p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />          
+          <h4 class="mt-3">Restart Apache</h4>
+          <pre>systemctl restart httpd</pre>
+        </div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step3a-Lock.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step3c-Lock.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>

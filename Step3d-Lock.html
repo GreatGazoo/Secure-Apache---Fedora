@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step 3d - Security Header Creation" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Elliptical Curves, RSA, Encryption, headers, Security headers, website headers, Clickjacking Attack, Cookies, X-Frame-Options, JavaScript, PHP, HTML, images, movies, X-XSS-Protection, cross site scripting, X-Content-Security-Policy, ETag, FileETag, server version, advertising, sniffing, Cache Control, referer header, HSTS" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 3d -Security Header Creation (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 3d - Security Header creation - <span class="red">Mandatory Step!!!</span></h3>
+          <p class="card-text">Security Headers seems to be one of the most skipped steps in just about every configuration out there. We have listed the minimum security headers config that should be included in every instance of Apache. Security Headers (to work against sniffing and manipulating our own content) are a whole topic to itself on how to control the connection with clients. Not to mention, what we could possibly to do anyone using header manipulation to injection all sorts of fun. Apache module and header manipulation is truly an art form that seemingly very few people understand. This is where the majority of the security work and tweaking comes into play in order to stay ahead of the curve. There are so many lovely options for <a href="http://httpd.apache.org/docs/current/mod/mod_headers.html" title="Mod Headers for Apache 2.4" target="_blank">headers</a> and how to use them.</p>
+          <p class="card-text"><strong>We are using headers to deal with things like:</strong></p>
+          <ul>
+            <li>Clickjacking Attack</li>
+            <li>Only using secure Cookies</li>
+            <li>Not allow for framing options outside of our domain (X-Frame-Options)</li>
+            <li>Only allowing JavaScript, Applications, PHP, HTML, images, movies, etc. to be run from the same domain only</li>
+            <li>X-XSS-Protection</li>
+            <li>X-Content-Security-Policy</li>
+            <li>Remove the ETag</li>
+            <li>Remove the FileETag</li>
+            <li>Remove server version advertising</li>
+            <li>Not allow  sniffing of our domain assets for downloading or uploading an executable file</li>
+            <li>Setup Cache Control</li>
+            <li>Enable and disable web platform features</li>
+            <li>Control the value of the referrer header in the link away from your page</li>
+          </ul>
+          <p class="card-text"><span class="orange">Header Syntax usage:</span> <strong>Header</strong> [condition] add|append|echo|edit|edit*|merge|set|setifempty|unset|note</p>
+          <p class="card-text"><span class="orange">Header</span> [[expr=]value [replacement] [early|env=[!]varname|expr=expression] <span class="orange">&lt;--When we desire to alter our headers behavior</span></p>
+          <p class="card-text">The below chart breaks down the top million requested websites - <a href="https://scotthelme.co.uk/alexa-top-1-million-analysis-february-2019/" title="Alexa Top 1 Million Analysis - February 2019" target="_blank">Scott Helme</a> performed this very interesting study about the lack of Security Header use in the top million requested website's. The results for Februay 2019 came in. Whilst things didn't look too great in the first scan back in 2016, the rate of improvement being shown is incredible! These numbers are still a long way from where we'd like to see them but all of the metrics are showing considerable progress.<a href="https://securityheaders.io" target="_blank"> Scott Helme Security Headers Test</a>- securityheaders.io</p>
+	  <p class="card-text"><img class="img-fluid rounded mx-auto d-none d-md-block" src="/images/Apache/stats-table.jpg" alt="Scott Helme Stat Table"></p>
+          <p class="card-text red">We do not recommend using security headers as a global configuration and will not show an alternative way of using them.</p>
+          <h4>Adding Headers to  Apache Web site config file</h4>
+          <pre>nano /etc/httpd/conf/EXAMPLE_com_ssl.conf</pre>
+          <h4> Add Security Headers  <span class="blue">&lt;--Add the sections in blue to the file</span></h4>
+          <p class="card-text"> &lt;IfModule mod_ssl.c&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+            ..............................<br>
+          <pre><span class="blue"> &lt;IfModule mod_headers.c&gt;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header unset ETag
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FileETag None
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header unset Server
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set X-Content-Type-Options &quot;nosniff&quot;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set X-XSS-Protection &quot;1; mode=block&quot;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set Referrer-Policy &quot;no-referrer-when-downgrade&quot;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set Feature-Policy &quotaccelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none' &quot;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set X-Frame-Options DENY
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set Cache-Control:public, max-age=31536000
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set MyHeader &quot;Feel safe zombiesecured headers in use!!! It took %D microseconds for Zombiesecured to serve this request on %t&quot;
+  &lt;/IfModule&gt;</span></pre>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+            &lt;/IfModule&gt;<br>
+            <br>
+            # vim: syntax=apache ts=4 sw=4 sts=4 sr noet<br>
+            <br>
+	</p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+          <h4 class="mt-3">Restart Apache</h4>
+          <pre>systemctl restart httpd</pre>
+        </div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step3c-Lock.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step3e-Lock.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>

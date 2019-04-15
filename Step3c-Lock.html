@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step3c - Enabling http 1.1/h2 Protocols" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Elliptical Curves, RSA, Encryption, http 1.1, H2, PHP, Application-Layer Protocol Negotiation, ALPN" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 3c - Enabling httpd1.1/H2 Protocols (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 3c - Enabling http1.1/H2 protocols - <span class="red">Mandatory Step!!!</span></h3>
+          <p class="card-text">Love the Apache foundation when they warn you about their own products - Enabling HTTP/2 on your Apache Server has impact on the resource consumption and if you have a busy site, you may need to consider carefully the implications. The first noticeable thing after enabling HTTP/2 is that your server processes will start additional threads. The reason for this is that HTTP/2 gives all requests that it receives to its own Worker threads for processing, collects the results and streams them out to the client. </p>
+          <p class="card-text"><a href="https://httpd.apache.org/docs/2.4/mod/mod_http2.html" title="HTTP1.1/H2" target="_blank">H2 Options explained more in depth</a></p>
+          <p class="card-text">As if the Apache Foundations documentation is not horrible enough, their guidance being awful and did they even test H2? <a href="https://http2.akamai.com/demo" title="Akamai test" target="_blank">Akamai test</a> showing the speed difference despite the Apache Foundation being the Apache Foundation. People still think encryption kills performance! This is an older myth that needs to die a painful death! Straight HTTP is slower than HTTPS!</p>
+          <p class="card-text">HTTP 1.1/2 has many wonderful benefits compared to HTTP 1.0/1.1. H2 has DDoS protection, better security, options, and so forth. H2 allows us to use <a href="https://www.keycdn.com/support/alpn/" title="ALPN" target="_blank">Application-Layer Protocol Negotiation (ALPN)</a> which drops our latency to pretty much zero for requests. <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW35" title="Mobile device security" target="_blank">Mobile devices</a> are also upping the ante for security. We should use it whenever possible and pretty much every modern browser supports it. Despite the warning, I have not had problems with H2 but still will &quot;tweak&quot; MPM Event and other settings to gain some performance. </p>
+          <p class="card-text"><a href="https://tools.keycdn.com/http2-test" target="_blank">Test to see if H2 is enabled</a></p>
+	  <p class="card-text"><span class="orange">I am surprised at how many large sites do not have it deployed.</span></p>
+	  <p class="card-text"><img class="img-fluid rounded mx-100% d-none d-md-block" src="/images/Apache/H2.jpg" longdesc="https://tools.keycdn.com/htt2-test"></p>
+	  <p class="card-text"><span class="blue">Test performed April 2019 - Image source keycdn.com</span></p>
+          <p class="card-text"><strong>Unfortunately the current version of Apache in RHEL 7.6 does not support HTTP/2. HTTP/2 has been introduced in RHEL 8 Beta. We will be covering it in an updated document once a final version has been released. For now we will enable http1.1.</strong></p>
+	<h4>Make changes to the Apache Website config file by adding the sections in <span class="blue">blue</span> to the file</h4>
+        <pre>nano /etc/httpd/conf.d/EXAMPLE_com_ssl.conf</pre>
+        <p class="card-text"> &lt;IfModule mod_ssl.c&gt;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAdmin host@EXAMPLE.com<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerName EXAMPLE.com<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAlias www.EXAMPLE.com<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DocumentRoot /var/www/html/EXAMPLE<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectoryIndex index.html<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogLevel info ssl:warn<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ErrorLog ${APACHE_LOG_DIR}/error.log<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CustomLog ${APACHE_LOG_DIR}/access.log combined<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">Protocol http/1.1</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLEngine on<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateFile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/etc/apache2/ssl/www_EXAMPLE_com.crt<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..............................<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+          &lt;/IfModule&gt;</p>
+        <h4>Close and exit the file</h4>
+        <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+        <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+        <h4 class="mt-3">Restart Apache</h4>
+        <pre>systemctl restart apache2</pre>
+	<h5><span class="orange">If you are going to use PHP</span></h5>
+        <p class="card-text">ProxyPassMatch directives are evaluated first, prior to the FilesMatch configuration being run. We are seeking to have granular control over our headers and behaviors of PHP. ProxyPass will forward the request and FileMatch will handle the request is the best way I can describe the difference!</p>
+        <p class="card-text blue">ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/var/www/html/EXAMPLE/$1</p>
+        <p class="card-text">Using ProxyPassMatch removes your ability to deny/allow access to PHP files. Not to mention you lose the ability to manipulate the server PHP requests. If you are passing PHP requests to an FPM daemon, you'd want to use FilesMatch + SetHandler instead of ProxyPassMatch.</p> 
+        <p class="card-text blue">&lt;FilesMatch \.php$&gt;<br>
+          SetHandler proxy:fcgi://127.0.0.1:9000/var/www/html/EXAMPLE/$1<br>
+          &lt;/FilesMatch&gt;</p>
+        <p class="cards-text blue">Make changes for PHP to the Apache Website config file by adding the sections in blue to the file</p>
+        <pre>nano /etc/httpd/conf.d/EXAMPLE_com_ssl.conf</pre>
+        <p class="card-text"> &lt;IfModule mod_ssl.c&gt;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAdmin host@EXAMPLE.com<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerName EXAMPLE.com<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAlias www.EXAMPLE.com<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DocumentRoot /var/www/html/EXAMPLE<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectoryIndex index.html<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogLevel info ssl:warn<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ErrorLog ${APACHE_LOG_DIR}/error.log<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CustomLog ${APACHE_LOG_DIR}/access.log combined<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">Protocol http/1.1</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">&lt;FilesMatch \.php$&gt;</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">SetHandler proxy:fcgi://127.0.0.1:9000/var/www/html/EXAMPLE/$1</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">&lt;/FilesMatch&gt;</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLEngine on<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..............................<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+          &lt;/IfModule&gt;</p>
+        <h4>Close and exit the file</h4>
+	<kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+        <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+        <h4 class="mt-3">Restart Apache</h4>
+        <pre>systemctl restart apache2</pre>
+	</div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step3b-Lock.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step3d-Lock.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>

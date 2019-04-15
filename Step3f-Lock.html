@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step 3f - HTTP Public Key Pinning (HPKP)" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Elliptical Curves, RSA, Encryption, HTTP Public Key Pinning, HPKP, Expect-CT" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 3f - HTTP Public Key Pinning (HPKP) (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 3f - HTTP Public Key Pinning (HPKP) - <span class="red">Caution!  Recommended</span><span class="black">ish</span></h3>
+          <p class="card-text">If your organization generates and rotate keys more than once a year, then you might consider not implementing a static key pinning.  Internet Engineering Task Force (IETF) <a href="https://tools.ietf.org/html/rfc7459" title="RFC 7459" target="_blank">Request for Comments (RFC) 7459</a> (Representation of Uncertainty and Confidence in the Presence Information Data Format Location Object) &amp; <a href="https://tools.ietf.org/html/rfc7469" title="RFC 7469" target="_blank">RFC 7469</a> (Public Key Pinning Extension for HTTP), states you have to pin two separate certificates in order to maintain confidence and be able to have an immediate backup not being used currently. So, one must be in the certificate chain used for client connections, the other pin(s) must not be present in the certificate chain being pinned. Having   four extras CA signed certs minimum in the key store for a huge enterprise would be  recommended. Business can afford the extra peace of mind at little cost compared to the risk for blocking customers.   The standards for presentation and method are not the best for implementation at this point. Is this why is it used by less than 1% of  the entire Internet?</p>
+          <p class="card-text">None of us here at Zombie are a fan of this technology, but it is being replaced by <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT" title="Expect-CT at Mozilla" target="_blank">Expect-CT.</a> We will be updating this procedure to Expect-CT as soon as HPKP dies a desired death. HPKP does help our security stance, but not enough to make it mandatory either. Why? The people implementing should take heed before implementing HPKP.  It works great with HSTS to prevent MiTM attacks, but offers risk for anyone not thoroughly understanding the implementation aspects of it. <span class="orange">If you are an Admin, then this is</span><span class="red"> Mandatory</span> and you can play with the time variable without issue and get the point I am trying to make. If you are a Novice, this is recommended. <span class="red">If this is your first time with HPKP -  then set max-age=1111 (~18.5 minutes)!!!!</span> Once everything is in order and tested,  then set max-age=3156000 for pinning the key for one year. What do you do if you/company change the key, or if the CA reissues the pinned certificate? Then you can pin the backup and alter  the time variable again. </p>
+          <p class="card-text"><a href="https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning" title="Great guide for HPKP" target="_blank">Great guide for HPKP</a></p>
+	  <h4 class="red">Apache and HPKP</h4>
+	  <p class="card-text"><a href="http://news.netcraft.com/archives/2016/03/22/secure-websites-shun-http-public-key-pinning.html" title="HPKP" target="_blank">Make one mistake and you are out of business for months or you have to reissue your certificates!</a> Companies should use <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT" title="Expect CT" target="_blank"> Expect-CT.</a></p>
+          <h4>Hashing</h4>
+          <p class="card-text">Hashing also provides three additional benefits.  First, hashing allows you to anonymize a certificate or public key. This might  be important if you application is concerned about leaking information during  decompilation and re-engineering.</p>
+          <p class="card-text">Second, a digested certificate fingerprint is  often available as a native API for many libraries, so its convenient to use.</p>
+          <p class="card-text">Finally, an organization might want to supply a  secondary (or back-up) identity in case the primary identity is compromised.  Hashing ensures your adversaries do not see the reserved certificate or public  key in advance of its use. In fact,<a href="https://tools.ietf.org/html/draft-ietf-websec-key-pinning-21#appendix-A" title=" Google's IETF draft HPKP" target="_blank"> Google's IETF draft </a> websec-key-pinning uses the technique. </p>
+          <h4>The First PIN</h4>
+          <p class="card-text"> First choice in pinning is your own certificate, if you have a great internal security infrastructure with a low risk of being compromised, then use this certificate. You can handle your entire domain and subdomains with one certificate.  If you issue a certificate for a subdomain and try to pin it, the certificates will overlap and appear to be potentially a problem on he clients end.  Second, you can pin the intermediate CA certificate that issued your cert in use. Pin this one if you are not in a secure environment many have access to the keys and certs.</p>
+          <h4>The Second PIN</h4>
+          <p class="card-text">The other pins (second, third, etc.) are your backup public keys on your extra other CA signed certs in the key store.  You can add the Hash fingerprint of a differing CA signed  certificate issued  for the second, third, and so on. Mozilla has a great article on <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning" title="HPKP Mozilla" target="_blank">HPKP</a> and why they got on board with it</p>
+          <h4 class="green">EXAMPLE</h4>
+          <p class="card-text"><span class="blue">Header set Public-Key-Pins &quot;pin-sha256=\&quot;<span class="orange">Hash of Pin 1</span>\&quot;; pin-sha256=\&quot;<span class="orange">Hash of Pin 2</span>\&quot;; pin-sha256=\&quot;<span class="orange">Hash of Pin 3</span>\&quot;; includeSubDomains; max-age=1111&quot;</span></p>
+          <p class="card-text"><a href="https://scotthelme.co.uk/" title="Scott Helme" target="_blank">Scott Helme</a> has a great tool to get the <a href="https://report-uri.io/home/pubkey_hash" title="Hash decoder" target="_blank">HPKP Hash Decoder</a>.Below are some steps that have been used by Scott Helme in setting up HPKP. The complete guide can be found <a href="https://scotthelme.co.uk/hpkp-http-public-key-pinning/" title="here" target="_blank">here.</a></p>
+          <h4>How to setup HPKP</h4>
+          <p class="card-text">The first step to creating a HPKP policy is to get the fingerprint of your current certificate.<span class="orange"> Change certificate name to your own.</span></p>
+          <pre>openssl x509 -pubkey &lt; EXAMPLE_CA.crt | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64</pre>
+          <p class="card-text"> This should produce something like this: Nsj0e1Md7GkYYkVoZWmM= and this goes here: pin-sha256=\<span class="orange">place the results of the hash output here between the trailing slashes</span>\ or pin-sha256=\Nsj0e1Md7GkYYkVoZWmM=\ </p>
+          <p class="card-text">Creating a Backup CSR</p>
+          <p class="card-text">In this step we are going to create some backup CSRs and include their fingerprints in the header.</p>
+          <pre>openssl req   -nodes -sha384 -days 1095   -newkey rsa:4096  -keyout rsa_EXAMPLE1.key -out rsa_EXAMPLE1.csr -extensions v3_req</pre>
+          <p class="card-text">Country Name (2 letter code) [US]:<br>
+            State or Province Name (full name) [DC]:<br>
+            Locality Name (eg, city) [Washington]:<br>
+            Organization Name (eg, company) [Company]:<br>
+            Organizational Unit Name (eg, section) [Tech]:<br>
+            Common Name (e.g. server FQDN or YOUR name) [www.EXAMPLE.com]:<br>
+            Email Address [info@EXAMPLE.com]:</p>
+          <p class="card-text"><span class="orange">Please enter the following 'extra' attributes to be sent with your certificate request</span></p>
+          <p class="card-text">A challenge password []:<br>
+            An optional company name []:</p>
+          <p class="card-text">Change the information based on your needs. The next step would be getting the fingerprint of the CSR that we just created.</p>
+          <pre>openssl req -pubkey &lt; rsa_EXAMPLE1.csr | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64</pre>
+          <p class="card-text">Now that we got the fingerprint of the CSR. We go through the above steps one more time to create another private key, CSR and fingerprint.</p>
+          <h4>The report-uri directive</h4>
+          <p class="card-text">HPKP includes a report-uri directive where you  specify a URI to POST a JSON formatted failure report for an unauthorized access attempt. If someone tries to connect to our site against our HPKP policy, it would be nice to know we are under attack. </p>
+          <p class="card-text">{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;date-time&quot;: date-time, <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;hostname&quot;: hostname,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;port&quot;: port,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;effective-expiration-date&quot;: expiration-date, <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;include-subdomains&quot;: include-subdomains,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;noted-hostname&quot;: noted-hostname,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;served-certificate-chain&quot;: [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pem1, ... pemN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;validated-certificate-chain&quot;: [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pem1, ... pemN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;known-pins&quot;: [ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;known-pin1, ... known-pinN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;] <br>
+            }</p>
+          <h4>Change the HTTPS Web site config file <span class="blue">&lt;--Add the sections in blue to the file</span></h4>
+          <pre>nano /etc/httpd/conf/EXAMPLE_com_ssl.conf</pre>
+          <p class="card-text">&lt;IfModule mod_ssl.c&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+            ..............................<br>
+            &lt;IfModule mod_headers.c&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header unset ETag<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FileETag None<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header unset Server<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set X-Content-Type-Options &quot;nosniff&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set X-XSS-Protection &quot;1; mode=block&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set X-Content-Security-Policy &quot;allow 'self';&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set X-Frame-Options DENY&lt;br&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set Cache-Control:public, max-age=31536000<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set Strict-Transport-Security: &quot;max-age=31536000; includeSubDomains; preload&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set MyHeader &quot;Feel safe zombiesecured headers in use!!! It took %D microseconds for Zombiesecured to serve this request on %t&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">Header always set Public-Key-Pins &quot;pin-sha256=\&quot;<span class="orange">Hash of Pin 1</span>\&quot;; pin-sha256=\&quot;<span class="orange">Hash of Pin 2</span>\&quot;; includeSubDomains; report-uri=&quot;https://report.EXAMPLE.com&quot;; max-age=1111&quot;</span> <span class="orange"> &lt;--- Change max age to 3156000 (1 Year) once pinning is working</span><br>
+            &lt;/IfModule&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+            &lt;/IfModule&gt;<br>
+            <br>
+            # vim: syntax=apache ts=4 sw=4 sts=4 sr noet<br>
+            <br>
+	  </p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+          <h4 class="mt-3">Restart Apache</h4>
+          <pre>systemctl restart httpd</pre>
+        </div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step3e-Lock.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step3g-Lock.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>

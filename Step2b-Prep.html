@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step2b - Apache Site Configuration" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Elliptical Curves, RSA, Encryption, Website Configuration, HTTP, HTTPS" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 2b - Apache Site Config http/https (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 2b - Apache site configurations http/https</h3>
+          <p class="card-text">There are a number of considerations you will have to account for in the https configuration file. A <a href="https://httpd.apache.org/docs/current/vhosts/mass.html" title="Mass hosting" target="_blank">great guide</a> for <a href="http://httpd.apache.org/docs/current/sections.html" title="Apache 2.4 guide " target="_blank">options</a> and <a href="https://httpd.apache.org/docs/current/vhosts/examples.html" title="VH Guide" target="_blank">other considerations</a></p>
+          <h4>Creating the HTTP Web site file</h4>
+          <p class="card-text blue">Change the blue EXAMPLE to whatever is appropriate for your needs</p>
+          <pre>nano /etc/httpd/conf.d/EXAMPLE_com.conf</pre>
+          <p class="card-text">&lt;VirtualHost *:80&gt; <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;ServerName <span class="blue">EXAMPLE.com</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;ServerAlias <span class="blue">www.EXAMPLE.com</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;DocumentRoot /var/www/html/<span class="blue">EXAMPLE</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;DirectoryIndex <span class="blue">index.html</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;ErrorLog /var/log/httpd/error.log<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;CustomLog  /var/log/httpd/custom.log combined<br>
+  &lt;/VirtualHost&gt;</p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save) <br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+          <h4 class="mt-3">Creating the HTTPS Web site file</h4>
+          <p class="card-text blue">Change the blue EXAMPLE to whatever is appropriate for your needs</span></p>
+          <pre>nano /etc/httpd/conf.d/EXAMPLE_com_ssl.conf</pre>
+          <p class="card-text"> &lt;IfModule mod_ssl.c&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAdmin <span class="blue">host@EXAMPLE.com</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this to whatever email address for your domain</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerName <span class="blue"> EXAMPLE.com</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this to the web site name you want to use</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServerAlias <span class="blue">www.EXAMPLE.com</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this to www or add any other alias for the site</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DocumentRoot /var/www/html<span class="blue">/EXAMPLE</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this to the directory where the web site files are located</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectoryIndex <span class="blue"> index.html</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this if you wish to have another name for the default page</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogLevel info ssl:warn<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ErrorLog /var/log/httpd/error.log<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CustomLog  /var/log/httpd/custom.log combined<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLEngine on<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateFile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/etc/httpd/ssl/<span class="blue">www_EXAMPLE_com.crt</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this to the Self Signed or the Certificate Authority Signed Certificate </span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateKeyFile   /etc/httpd/ssl/<span class="blue">rsa_EXAMPLE.key</span>&nbsp;&nbsp;<b> or </b> &nbsp;&nbsp;<span class="blue">ec_EXAMPLE.key</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this to the key you generated for the site</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateChainFile /etc/httpd/ssl/<span class="blue">EXAMPLE_CA.crt</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change this to the Certificate Authority Chain file you created </span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLCACertificatePath /etc/pki/tls/certs/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#SSLCACertificateFile /etc/httpd/ssl/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#SSLCARevocationPath /etc/httpd/ssl.crl/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#SSLCARevocationFile /etc/httpd/ssl.crl/ca-bundle.crl<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#SSLVerifyClient require<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#SSLVerifyDepth  10<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#SSLOptions +FakeBasicAuth +ExportCertData +StrictRequire<br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;FilesMatch &quot;\.(cgi|shtml|phtml|php)$&quot;&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLOptions +StdEnvVars<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/FilesMatch&gt;<br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Directory /usr/lib/cgi-bin&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSLOptions +StdEnvVars<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Directory&gt;<br>
+            <br>
+            <span class="blue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Directory /&gt;</span><span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Protect our system files if you do not add this locally, you can add it globally (all sites) in the next section Step 2c</span><br>
+            <span class="blue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Require all denied<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AllowOverride None<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Options None<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Directory&gt;</span><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Directory /var/www/html/<span class="blue">EXAMPLE</span>/&gt;<span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Change to the directory of where the web sites files are located</span></p>
+            <p class="card-text">Enter options of what to allow to execute or not (Optional permissions for directories below)</p>
+            <h4 class="green"><b>(Optional permissions for directories)</b></span></h4>
+            <p class="card-text">Use the (-) sign before the option to disable and use the (+) sign to enable the option</p>
+            <h4 class="green"><u> Example:</u></h4>
+          <p class="card-text"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Directory /var/www/html/<span class="blue">EXAMPLE</span>&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Options +Includes -Indexes -ExecCGI +FollowSymLinks <span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Enables Server Side Includes (SSI), disables Indexing, disable executing CGI scripts and enables Following Symlinks</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AllowOverride None<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Order allow,deny<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexIgnore *.mp3 <span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Hide certain files types from public view if allowing listing</span> - Requires Indexes <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Allow from all<span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Allow from 10.10.0.0/24</span> To only allow certain networks<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Directory&gt;<br>
+            <br>
+            <b>Options All </b>– All options are enabled (except MultiViews). <b>If you don’t specify Options directive, this is the default value.</b>&nbsp;&nbsp;<span class="red"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;--- Never use!!!</b></span><br>
+            <b>Options ExecCGI</b> – Execute CGI scripts (uses mod_cgi)<br>
+            <b>Options FollowSymLinks</b> – If you have symbolic links in this directory, it will be followed.<br>
+            <b>Options Includes</b> – Allow server side includes (uses mod_include)<br>
+            <b>Options Includes NOEXEC</b> – Allow server side includes without the ability to execute a command or cgi.<br>
+            <b>Options Indexes</b> – Disable directory listing<br>
+            <b>Options MultiViews</b> – Allow content negotiated multiviews (uses mod_negotiation)<br>
+            <b>Options SymLinksIfOwnerMatch</b> – Similar to FollowSymLinks. But, this will follow only when the owner is same between the link and the original directory to which it is linked.</p>
+            <h4><span class="green"><b>(Optional)</b></span></h4>
+            <p class="card-text">Protecting our content from being displayed on someone else's website (Think twice about this before implementing: Internet systems, probably not. Intranet systems, probably.)</p>
+            <p class="card-text"> <span class="blue">&nbsp;&nbsp;&nbsp;&nbsp;SetEnvIf Referer &quot;^https://EXAMPLE\.com/&quot; local_referal</span> <span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;---  Protecting our content from being displayed on someone else's website</span><br>
+            <span class="blue">&nbsp;&nbsp;&nbsp;&nbsp;SetEnvIf Referer &quot;^$&quot; local_referal</span><br>
+            <br>
+            <b>Protect the directories you desire</b> <span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&lt;---  Protecting the directories of the content you do not want displayed on someone else's website</span><br>
+            <br>
+            <span class="blue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Directory &quot;/var/www/html/EXAMPLE/images&quot;&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Require env local_referal<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Directory&gt;<br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Directory &quot;/var/www/html/EXAMPLE/documents&quot;&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Require env local_referal<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Directory&gt;</span> <br>
+            <br>
+            # vim: syntax=apache ts=4 sw=4 sts=4 sr noet<br>
+            ......................<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+            &lt;/IfModule&gt;<br>
+          </p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+        </div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step2a-Prep.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step2c-Prep.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>

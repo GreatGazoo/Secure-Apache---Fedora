@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="description" content="Securing Apache - Fedora/RedHat Step 3e - HTTP Strict Transport Protocol (HSTS)" />
+<meta name="keywords" content="Apache, Security, SSL, TLS, Certificate, Fedora, RedHat, SUSE, CentOS, Elliptical Curves, RSA, Encryption, HTTP Strict Transport Protocol, HSTS, http, https" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Kevin Dziekonski" />
+<meta name="generator" content="The Dead's Script O' Rama" />
+<meta name="application-name" content="Zombie Security" />
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="copyright" content="Zombie materials are subject to copyrights" />
+<meta property="og:title" content="Free Best Practice Security Guides" />
+<meta property="og:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:secure_url" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="og:image:type" content="image/jpg" />
+<meta property="og:image:alt" content="Zombie Security – Free Best Practice Security Guides" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://zombiesecured.com" />
+<meta property="og:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="og:site_name" content="Zombie Secured" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="https://zombiesecured.com " />
+<meta property="twitter:site.id" content="@zombiesecured" />
+<meta property="twitter:creator" content="@kevindziekonski" />
+<meta property="twitter:description" content="Best Practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?" />
+<meta property="twitter:title" content="Zombiesecured Free Educational Best Practices Security Guides" />
+<meta property="twitter:image" content="https://zombiesecured.com/images/ZTwitter.jpg" />
+<meta property="twitter:image.alt" content="Free security education and best practices - Network Access Management (NAM), Privileged Access Management (PAM), Multi-Factor Authentication (MFA), Identity Access Management (IAM), Identity Governance (IG), Apache & Tomcat?"  />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta name="msapplication-TileColor" content="#D83434" />
+<meta name="msapplication-TileImage" content="https://zombiesecured.com/images/favicon.jpg" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="apple-touch-icon" href="https://zombiesecured.com/images/favicon.png" />
+<link rel="canonical" href="https://zombiesecured.com/" />
+<title>Step 3e - HTTP Strict Transport Protocol (HSTS) (Fedora/Redhat)</title>
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Add the common header to display the main menu. -->
+  <div id="header"></div>
+  <div class="row">
+    <!-- This section is the side menu section -->
+    <div class="col-md-2">
+      <div id="apacheFedoraSideMenu"></div>
+    </div>
+    <!-- This section is the content section -->
+    <div class="col-md-10">
+      <div class="card border-dark mb-3 mt-3">
+        <div class="card-header d-flex align-items-center justify-content-center">
+          <!-- This is the content header start.  Add text here for the content banner text. -->
+          <h4>Securing Apache - Fedora/CentOS/SUSE/RedHat</h4>
+        </div>
+        <div class="card-body">
+          <!-- This section is the content section.  Add the bulk HTML here -->
+          <h3>Step 3e - HTTP Strict Transport Protocol (HSTS) - <span class="red">Mandatory Step!!!</span></h3>
+          <p class="card-text">The HTTP Strict Transport Security (HSTS) feature lets a web server inform the browser it will not load the site using HTTP. HSTS will automatically convert all attempts to access the site using HTTP to HTTPS requests instead. This is one of the most misunderstood subjects for some reason. You would think every government institution, bank, credit card, insurance or healthcare company would want this enabled by default, right? Most do not!!!</p>
+	  <h5>How does HSTS work and how does Zombie work with this standard?</h5>
+          <p class="card-text">The clients HTTP request will be responded with an encrypted response. An HTTPS acknowledgement over HTTP! Yes! That is bad right? No! You want this! You are redirecting and altering the clients HTTP request, to an encrypted request over HTTPS. Technically, you made the secure request before the client made a non-secure connection. This is the only "secure" information over HTTP you are sharing with the connecting clients. The HTTP request contains nothing in the packets other than a re-routes to HTTPS. This is our prefernce and lowers your risk profile for attack vectors. Truly, turning off HTTP is the best, but the standards have not been updated to address this issue.</p>
+	  <h5>Do I really need HSTS?</h5>
+          <p class="card-text">Not adding HSTS is serious mistake! Any major application/browser  works with it and we do not recommend making headers a global configuration, but rather add the headers in each Web site config file. Any enterprise internal environment should have this globally. You must always be in control of the clients, the clients should never have control under their terms.</p>
+          <p class="card-text">The following should be included in the website headers section to ensure every client never connects to the application/site unless it is secure and remains connected securely. To have the HTTP request rejected and respond with an HTTPS connection instead, it requires preloading to be enabled. <span class="green"><strong>***Add (preload) to the configuration once you submit your site</strong></span> <a href="https://hstspreload.appspot.com/" title="HSTS Preload" target="_blank">here! </a></p>
+          <p class="card-text">Not to be annoying by repeating myself. People still think encryption kills performance! This is an older myth that needs to die a painful death! Straight HTTP is slower than HTTPS! <span class="red">Therefore, HSTS is a must for anyand every environment!</span></p>
+          <h4>Change the  HTTP Web site file <span class="blue">&lt;--Add the sections in blue to the file</span></h4>
+          <pre>nano /etc/httpd/conf.d/EXAMPLE_com.conf</pre>
+          <p class="card-text"> &lt;VirtualHost *:80&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;ServerName EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;ServerAlias www.EXAMPLE.com<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">Redirect permanent / https://EXAMPLE.com/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="orange">&lt;--Will send everyone to our default site https://www.EXAMPLE.com</span><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>OR</b><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">Redirect permanent / https://EXAMPLE.com</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="orange">&lt;--Requesting http://www.EXAMPLE.com/page - will be sent to https://www.EXAMPLE.com/page</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">RewriteEngine On</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">RewriteRule ^(.*)$ https://EXAMPLE.com/$1 [L,R=301]</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;DocumentRoot /var/www/html/EXAMPLE<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;DirectoryIndex index.html<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;ErrorLog ${APACHE_LOG_DIR}/error.log<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;CustomLog ${APACHE_LOG_DIR}/access.log combined<br>
+            &lt;/VirtualHost&gt;</p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+          <h4 class="mt-3">Restart Apache</h4>
+          <pre>systemctl restart httpd</pre>
+          <h4>Change the  HTTPS Web site file <span class="blue">&lt;--Add the sections in blue to the file</span></h4>
+          <pre>nano /etc/httpd/conf.d/EXAMPLE_com_ssl.conf</pre>
+          <p class="card-text">&lt;IfModule mod_ssl.c&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;VirtualHost *:443&gt;<br>
+            ..............................<br>
+            &lt;IfModule mod_headers.c&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header unset ETag<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FileETag None<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header unset Server<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set X-Content-Type-Options &quot;nosniff&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header always set X-XSS-Protection &quot;1; mode=block&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set X-Content-Security-Policy &quot;allow 'self';&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set X-Frame-Options DENY<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set Cache-Control:public, max-age=31536000<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Header set MyHeader &quot;Feel safe zombiesecured headers in use!!! It took %D microseconds for Zombiesecured to serve this request on %t&quot;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">Header always set Strict-Transport-Security: &quot;max-age=31536000; includeSubDomains; preload&quot;</span><br>
+            &lt;/IfModule&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/VirtualHost&gt;<br>
+            &lt;/IfModule&gt;<br>
+            <br>
+            # vim: syntax=apache ts=4 sw=4 sts=4 sr noet<br>
+            <br>
+	  </p>
+          <h4>Close and exit the file</h4>
+          <kbd>ctrl</kbd><strong> + </strong><kbd>o</kbd>&nbsp;&nbsp; (Save)<br />
+          <kbd>ctrl</kbd><strong> + </strong><kbd>x</kbd>&nbsp;&nbsp; (Exit)<br />
+          <h4 class="mt-3">Restart Apache</h4>
+          <pre>systemctl restart httpd</pre>
+        </div>
+        <!-- This is the end of the bulk content section. -->
+        <div class="card-footer text-secondary">
+          <!-- This is the card footer where the next/previous links and arrows go.  The links will need to be updated for every page. -->
+          <a class="text-secondary float-left" href="Step3d-Lock.html"><i class="fa fa-arrow-left fa-2x"></i>&nbsp;&nbsp;PREVIOUS&nbsp;&nbsp;</a> <a class="text-secondary float-right" href="Step3f-Lock.html">&nbsp;&nbsp;NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right fa-2x"></i></a> </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add the common footer. -->
+<div id="footer"></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/zombie.js"></script>
+</body>
+</html>
